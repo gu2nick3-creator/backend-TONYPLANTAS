@@ -1,9 +1,24 @@
-export function buildUploadResponse(file) {
-  if (!file) {
+import cloudinary from "../config/cloudinary.mjs";
+
+export async function uploadImageToCloudinary(filePath) {
+  const result = await cloudinary.uploader.upload(filePath, {
+    folder: "tony-plantas/products",
+    resource_type: "image",
+  });
+
+  return {
+    imageUrl: result.secure_url,
+    publicId: result.public_id,
+  };
+}
+
+export function buildUploadResponse(uploadResult) {
+  if (!uploadResult) {
     return null;
   }
 
   return {
-    imageUrl: `/uploads/${file.filename}`,
+    imageUrl: uploadResult.imageUrl,
+    publicId: uploadResult.publicId,
   };
 }
